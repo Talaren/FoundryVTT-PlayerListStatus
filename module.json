@@ -11,7 +11,7 @@
 	],
 	"version": "1.0.0",
 	"minimumCoreVersion": "9",
-	"compatibleCoreVersion": "9",
+	"compatibleCoreVersion": "10",
 	"socket": true,
 	"scripts": [
 		"scripts/playerliststatus.js"
