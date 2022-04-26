@@ -1,0 +1,18 @@
+{
+	"name": "playerListStatus",
+	"title": "Playerlist Status - Lib for View status on Playerlist",
+	"description": "A Lib you can set Status to the playerlist",
+	"authors": [
+		{
+			"name": "Talaren",
+			"url": "https://github.com/Talaren"
+		}
+	],
+	"version": "1.0.0",
+	"minimumCoreVersion": "9",
+	"compatibleCoreVersion": "9",
+	"socket": true,
+	"scripts": [
+		"scripts/playerliststatus.js"
+	]
+}
