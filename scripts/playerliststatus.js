@@ -101,7 +101,7 @@ class PlayerListStatus {
         this.addUsername(username);
         this.users.get(username).beforeOnlineStatus.set(key, element);
         if (game.user.data.name === username) {
-            socket.emit('module.playerListStatus', new PlayerListStatusEvent('add', 'beforeOnlineStatus', username, key, element));
+            game.socket.emit('module.playerListStatus', new PlayerListStatusEvent('add', 'beforeOnlineStatus', username, key, element));
         }
         game.users.render();
     }
@@ -110,7 +110,7 @@ class PlayerListStatus {
         if (typeof this.users.get(username) !== 'undefined') {
             this.users.get(username).beforeOnlineStatus.delete(key);
             if (game.user.data.name === username) {
-                socket.emit('module.playerListStatus', new PlayerListStatusEvent('remove', 'beforeOnlineStatus', username, key, null));
+                game.socket.emit('module.playerListStatus', new PlayerListStatusEvent('remove', 'beforeOnlineStatus', username, key, null));
             }
 
         }
@@ -121,7 +121,7 @@ class PlayerListStatus {
         this.addUsername(username);
         this.users.get(username).beforePlayername.set(key, element);
         if (game.user.data.name === username) {
-            socket.emit('module.playerListStatus', new PlayerListStatusEvent('add', 'beforePlayername', username, key, element));
+            game.socket.emit('module.playerListStatus', new PlayerListStatusEvent('add', 'beforePlayername', username, key, element));
         }
         game.users.render();
     }
@@ -130,7 +130,7 @@ class PlayerListStatus {
         if (typeof this.users.get(username) !== 'undefined') {
             this.users.get(username).beforePlayername.delete(key);
             if (game.user.data.name === username) {
-                socket.emit('module.playerListStatus', new PlayerListStatusEvent('remove', 'beforePlayername', username, key, null));
+                game.socket.emit('module.playerListStatus', new PlayerListStatusEvent('remove', 'beforePlayername', username, key, null));
             }
 
         }
@@ -141,7 +141,7 @@ class PlayerListStatus {
         this.addUsername(username);
         this.users.get(username).afterPlayername.set(key, element);
         if (game.user.data.name === username) {
-            socket.emit('module.playerListStatus', new PlayerListStatusEvent('add', 'afterPlayername', username, key, element));
+            game.socket.emit('module.playerListStatus', new PlayerListStatusEvent('add', 'afterPlayername', username, key, element));
         }
         game.users.render();
     }
@@ -150,7 +150,7 @@ class PlayerListStatus {
         if (typeof this.users.get(username) !== 'undefined') {
             this.users.get(username).afterPlayername.delete(key);
             if (game.user.data.name === username) {
-                socket.emit('module.playerListStatus', new PlayerListStatusEvent('remove', 'afterPlayername', username, key, null));
+                game.socket.emit('module.playerListStatus', new PlayerListStatusEvent('remove', 'afterPlayername', username, key, null));
             }
 
         }
