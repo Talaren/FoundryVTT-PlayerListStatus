@@ -16,7 +16,7 @@ export default class PlayerListStatus {
     }
 
     removeStatusBeforePlayername(id, key) {
-        this.removeStatus(id, "BeforePlayername", key);
+        this.removeStatus(id, "beforePlayername", key);
     }
 
     addStatusAfterPlayername(id, key, element) {
