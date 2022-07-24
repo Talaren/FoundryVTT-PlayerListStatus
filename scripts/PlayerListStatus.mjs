@@ -1,136 +1,221 @@
 export default class PlayerListStatus {
-    constructor() {
-        this.moduleName = "playerListStatus";
-    }
 
-    addStatusBeforeOnlineStatus(id, key, element) {
-        this.addStatus(id, "beforeOnlineStatus", key, element);
-    }
+	#moduleName = "playerListStatus";
+	positions = {
+		beforeOnlineStatus: "beforeOnlineStatus",
+		beforePlayername: "beforePlayername",
+		afterPlayername: "afterPlayername"
+	}
+	#registeredKeys = new Map();
+	#defaultOptions = {
+		resetFlags: true,
+		override: false,
+		position: this.positions.afterPlayername
+	}
 
-    removeStatusBeforeOnlineStatus(id, key) {
-        this.removeStatus(id, "beforeOnlineStatus", key);
-    }
+	constructor() {
+		Object.freeze(this.positions);
+	}
 
-    addStatusBeforePlayername(id, key, element) {
-        this.addStatus(id, "beforePlayername", key, element);
-    }
+	registerKey(key, element, options = this.#defaultOptions) {
+		if (typeof key == 'undefined') {
+			console.error("no key")
+			return false;
+		}
+		if (typeof key == 'undefined') {
+			console.error("no element");
+			return false;
+		}
+		if (!options.override && this.#registeredKeys.has(key)) {
+			console.warn("Key is set, but not override is not set");
+			return false;
+		}
+		this.#registeredKeys.set(key, { value: element, position: options.position });
+		if (options.resetFlags) {
+			this.#removeFlag(key, game.user, this.positions.beforeOnlineStatus);
+			this.#removeFlag(key, game.user, this.positions.beforePlayername);
+			this.#removeFlag(key, game.user, this.positions.afterPlayername);
+		}
+		return true;
+	}
 
-    removeStatusBeforePlayername(id, key) {
-        this.removeStatus(id, "beforePlayername", key);
-    }
+	removeKey(key) {
+		off(key);
+		this.#registeredKeys.delete(key);
+	}
 
-    addStatusAfterPlayername(id, key, element) {
-        this.addStatus(id, "afterPlayername", key, element);
-    }
-
-    removeStatusAfterPlayername(id, key) {
-        this.removeStatus(id, "afterPlayername", key);
-    }
-
-    isStatusActiv(id, key) {
-        let user = this.getUser(id);
-        if (typeof user !== "undefined") {
-            let beforeOnlineStatus = user.getFlag(this.moduleName, "beforeOnlineStatus");
-            let beforePlayername = user.getFlag(this.moduleName, "beforePlayername");
-            let afterPlayername = user.getFlag(this.moduleName, "afterPlayername");
-            if (typeof beforeOnlineStatus !== "undefined" && beforeOnlineStatus !== null) {
-                return new Map(Object.entries(beforeOnlineStatus)).has(key);
-            }
-            if (typeof beforePlayername !== "undefined" && beforePlayername !== null) {
-                return new Map(Object.entries(beforePlayername)).has(key);
-            }
-            if (typeof afterPlayername !== "undefined" && afterPlayername !== null) {
-                return new Map(Object.entries(afterPlayername)).has(key);
-            }
-        }
-        return false;
-    }
-
-    addStatus(id, list, key, element) {
-        let user = this.getUser(id);
-        if (typeof user !== "undefined") {
+	on(key, id) {
+		if (!this.#registeredKeys.has(key)) {
+			console.error("Register Key for on!");
+			return false;
+		}
+		let user = this.#getUser(id);
+		if (typeof user !== "undefined") {
 			let elementList = new Map();
-			elementList.set(key, element);
-            console.debug(user.setFlag(this.moduleName, list, Object.fromEntries(elementList)));
-        }
-    }
+			elementList.set(key, this.#registeredKeys.get(key).value);
+			this.#setFlag(key, user, elementList);
+			return true;
+		}
+		return false;
+	}
 
-    removeStatus(id, list, key) {
-        let user = this.getUser(id);
-        if (typeof user !== "undefined") {
-            console.debug(user.unsetFlag(this.moduleName, list + "." + key));
-        }
-    }
+	off(key, id) {
+		if (!this.#registeredKeys.has(key)) {
+			console.error("Register Key for on!");
+			return false;
+		}
+		let user = this.#getUser(id);
+		if (typeof user !== "undefined") {
+			this.#removeFlag(key, user);
+			return true;
+		}
+		return false;
+	}
 
-    getUser(id) {
-        if (id === game.user.id) {
-            return game.user;
-        } else {
-            return game.users.get(id);
-        }
-    }
+	status(key, id) {
+		if (!this.#registeredKeys.has(key)) {
+			console.error("Register Key for status!");
+			return false;
+		}
+		let user = this.#getUser(id);
+		let flags = user.getFlag(this.#moduleName, this.#registeredKeys.get(key).position);
+		if (typeof flags == 'undefined') {
+			return false
+		}
+		return new Map(Object.entries(flags)).has(key);
+	}
 
-    render(playerList, html) {
-        for (let user of game.users) {
-            let buttonPlacement = html.find(`[data-user-id="${user.id}"]`);
-            let children = buttonPlacement.children();
-            if (children.length === 0) {
-                //Is Offline User
-                continue;
-            }
-            let playerName = undefined;
-            let playerActive = undefined;
-            for (let child of children) {
-                if (child.classList.contains("player-name")) {
-                    playerName = child;
-                } else if (child.classList.contains("player-active")) {
-                    playerActive = child;
-                }
-            }
-            if (typeof playerName === 'undefined' || typeof playerActive === 'undefined') {
-                continue;
-            }
-            playerName.style.flex = 'auto';
-            let flag = user.data.flags["playerListStatus"];
-            if (typeof flag === 'undefined') {
-                continue;
-            }
-            let beforeOnlineStatus = flag["beforeOnlineStatus"];
-            let beforePlayername = flag["beforePlayername"];
-            let afterPlayername = flag["afterPlayername"];
-            if (typeof beforeOnlineStatus !== "undefined" && beforeOnlineStatus !== null) {
-                for (let [key, value] of new Map(Object.entries(beforeOnlineStatus))) {
-                    if (value instanceof HTMLElement) {
-                        buttonPlacement[0].insertBefore(value, playerActive);
-                    } else {
-                        let valueElement = document.createElement('span');
-                        valueElement.textContent = value;
-                        buttonPlacement[0].insertBefore(valueElement, playerActive);
-                    }
-                }
-            }
-            if (typeof beforePlayername !== "undefined" && beforePlayername !== null) {
-                for (let [key, value] of new Map(Object.entries(beforePlayername))) {
-                    if (value instanceof HTMLElement) {
-                        buttonPlacement[0].insertBefore(value, playerName);
-                    } else {
-                        let valueElement = document.createElement('span');
-                        valueElement.textContent = value;
-                        buttonPlacement[0].insertBefore(valueElement, playerName);
-                    }
-                }
-            }
-            if (typeof afterPlayername !== "undefined" && afterPlayername !== null) {
-                for (let [key, value] of new Map(Object.entries(afterPlayername))) {
-                    if (value instanceof HTMLElement) {
-                        buttonPlacement[0].appendChild(value);
-                    } else {
-                        let valueElement = document.createElement('span');
-                        valueElement.textContent = value;
-                        buttonPlacement[0].appendChild(valueElement);
-                    }
-                }
-            }
-        }
-    }
+	changeValue(key, element) {
+		this.#registeredKeys.get(key).value = element;
+		this.on(key);
+	}
+
+	changePosition(key, position) {
+		let active = this.status(key);
+		this.off(key);
+		this.#registeredKeys.get(key).position = position;
+		if (active) {
+			this.on(key);
+		}
+	}
+
+	#removeFlag(key, user) {
+		let elementList = new Map();
+		elementList.set("-=" + key, null);
+		this.#setFlag(key, user, elementList)
+	}
+
+	#getUser(id) {
+		if (typeof id == 'undefined') {
+			return game.user;
+		}
+		if (id === game.user.id) {
+			return game.user;
+		} else {
+			return game.users.get(id);
+		}
+	}
+
+	#setFlag(key, user, elementList) {
+		if (parseInt(game.version) == 9) {
+			this.#setFlagAsync(key, user, elementList)
+		} else {
+			user.setFlag(this.#moduleName, this.#registeredKeys.get(key).position, Object.fromEntries(elementList));
+		}
+	}
+
+	async #setFlagAsync(key, user, elementList) {
+		console.debug(await user.setFlag(this.#moduleName, this.#registeredKeys.get(key).position, Object.fromEntries(elementList)));
+	}
+
+	render(playerList, html) {
+		let root = getComputedStyle(document.querySelector(":root"));
+		let width = parseInt(root.getPropertyValue("--players-width").replace("px", ""));
+		let maxWidth = 0;
+		for (let user of playerList.getData().users) {
+			let userid = (typeof user._id == 'undefined') ? user.id : user._id;
+			let buttonPlacement = html.find(`[data-user-id="${userid}"]`);
+			let currentWidth = 0;
+			let children = buttonPlacement.children();
+			let playerName = undefined;
+			let playerActive = undefined;
+			for (let child of children) {
+				if (child.classList.contains("player-name")) {
+					playerName = child;
+				} else if (child.classList.contains("player-active")) {
+					playerActive = child;
+				} else if (child.classList.contains("player-inactive")) {
+					playerActive = child;
+				}
+			}
+			if (typeof playerName === 'undefined' || typeof playerActive === 'undefined') {
+				continue;
+			}
+			let flag
+			if (parseInt(game.version) == 9) {
+				flag = user.data.flags["playerListStatus"];
+			} else {
+				flag = user.flags["playerListStatus"];
+			}
+
+			if (typeof flag === 'undefined') {
+				continue;
+			}
+			let beforeOnlineStatus = flag[this.positions.beforeOnlineStatus];
+			let beforePlayername = flag[this.positions.beforePlayername];
+			let afterPlayername = flag[this.positions.afterPlayername];
+			if (typeof beforeOnlineStatus !== "undefined" && beforeOnlineStatus !== null) {
+				for (let [key, value] of new Map(Object.entries(beforeOnlineStatus))) {
+					if (value instanceof HTMLElement) {
+						currentWidth += value.offsetWidth;
+						buttonPlacement[0].insertBefore(value, playerActive);
+					} else {
+						currentWidth += value.length;
+						let valueElement = document.createElement('span');
+						valueElement.style.flex = "0 0 auto";
+						valueElement.textContent = value;
+						valueElement.id = key;
+						buttonPlacement[0].insertBefore(valueElement, playerActive);
+					}
+				}
+			}
+			if (typeof beforePlayername !== "undefined" && beforePlayername !== null) {
+				for (let [key, value] of new Map(Object.entries(beforePlayername))) {
+					if (value instanceof HTMLElement) {
+						currentWidth += value.offsetWidth;
+						buttonPlacement[0].insertBefore(value, playerName);
+					} else {
+						currentWidth += value.length;
+						let valueElement = document.createElement('span');
+						valueElement.style.flex = "0 0 auto";
+						valueElement.textContent = value;
+						valueElement.id = key;
+						buttonPlacement[0].insertBefore(valueElement, playerName);
+					}
+				}
+			}
+			if (typeof afterPlayername !== "undefined" && afterPlayername !== null) {
+				for (let [key, value] of new Map(Object.entries(afterPlayername))) {
+					if (value instanceof HTMLElement) {
+						currentWidth += value.offsetWidth;
+						buttonPlacement[0].appendChild(value);
+					} else {
+						currentWidth += value.length;
+						let valueElement = document.createElement('span');
+						valueElement.style.flex = "0 0 auto";
+						valueElement.textContent = value;
+						valueElement.id = key;
+						playerName.append(valueElement);
+					}
+				}
+			}
+			if (currentWidth > maxWidth) {
+				maxWidth = currentWidth;
+			}
+
+		}
+		if (maxWidth > 0) {
+			html[0].style.width = (width + maxWidth) + "px";
+		}
+	}
 }
