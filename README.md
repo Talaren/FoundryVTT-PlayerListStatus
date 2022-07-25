@@ -12,12 +12,12 @@ Allow modules to show text or icon in the playerlist.
   + [registerKey](#game.playerListStatus.registerKey)
     - [options](#options)
 * [API](#API)
-  + [on](#game.playerListStatus.on)
-  + [off](#game.playerListStatus.off)
-  + [status](#game.playerListStatus.status)
-  + [changeValue](#game.playerListStatus.changevalue)
-  + [changePosition](#game.playerListStatus.changeposition)
-  + [removeKey](#game.playerListStatus.removekey)
+  + [on](#gameplayerliststatuson)
+  + [off](#gameplayerliststatusoff)
+  + [status](#gameplayerlistStatusstatus)
+  + [changeValue](#gameplayerliststatuschangevalue)
+  + [changePosition](#gameplayerliststatuschangeposition)
+  + [removeKey](#gameplayerliststatusremovekey)
 
 
 # Include as a dependency in your manifest
