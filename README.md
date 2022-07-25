@@ -103,6 +103,7 @@ Hooks.once('playerListStatusReady', function() {
 
 ### api access after key registration
 
+
 #### on
 
 Set the flag and show the key
@@ -135,6 +136,7 @@ id: (optional) `string` a user id
 
 return: 'boolean' is key active?
 
+
 #### changeValue
 
 Change the element to show
@@ -145,6 +147,24 @@ key: `string' the registered key
 element: `string` or `HTMLElement` the element to show
 
 
+
+```js
+	game.settings.register(moduleName, "typingIcon", {
+		name: game.i18n.localize("PLAYER-STATUS.typing.icon"),
+		scope: 'world',
+		config: true,
+		choices: {
+			"⌛": "⌛",
+			"🗨️": "🗨️"
+		},
+		type: String,
+		default: "🗨️",
+		onChange: setting => game.playerListStatus.changeValue(setting)
+	});
+
+```
+
+
 #### changePosition
 
 Change the key position.
@@ -153,6 +173,26 @@ Change the key position.
 key: `string' the registered key
 
 element: `game.playerListStatus.positions` the position to show the key
+
+
+
+```js
+	game.settings.register(moduleName, "afkIconPosition", {
+		name: game.i18n.localize("PLAYER-STATUS.afk.iconPosition"),
+		scope: 'world',
+		config: true,
+		choices: {
+			game.playerListStatus.options.beforeOnlineStatus: game.i18n.localize("PLAYER-STATUS.iconPosition.beforeOnline"),
+			game.playerListStatus.options.beforePlayername: game.i18n.localize("PLAYER-STATUS.iconPosition.afterOnline"),
+			game.playerListStatus.options.afterPlayername: game.i18n.localize("PLAYER-STATUS.iconPosition.afterName")
+		},
+		type: String,
+		default: game.playerListStatus.options.afterPlayername,
+		onChange: setting => game.playerListStatus.changePosition(setting)
+	});
+
+```
+
 
 #### removeKey
 
