@@ -9,16 +9,15 @@ Allow modules to show text or icon in the playerlist.
   + [Foundry V10](#foundry-v10)
   + [Foundry V9](#foundry-v9)
 * [Usage](#usage)
-  + [register key](#register-key)
-    - [default options](#default-options)
-    - [with options](#with-options)
-* [api access after key registration](#api-access-after-key-registration)
-  + [on](#on)
-  + [off](#off)
-  + [status](#status)
-  + [changeValue](#changevalue)
-  + [changePosition](#changeposition)
-  + [removeKey](#removekey)
+  + [registerKey](#game.playerListStatus.registerKey)
+    - [options](#options)
+* [API](#API)
+  + [on](#game.playerListStatus.on)
+  + [off](#game.playerListStatus.off)
+  + [status](#game.playerListStatus.status)
+  + [changeValue](#game.playerListStatus.changevalue)
+  + [changePosition](#game.playerListStatus.changeposition)
+  + [removeKey](#game.playerListStatus.removekey)
 
 
 # Include as a dependency in your manifest
@@ -52,9 +51,10 @@ Allow modules to show text or icon in the playerlist.
 	]
 ```
 
+
 # Usage
 
-## register key
+## game.playerListStatus.registerKey
 
 key: `string' the registered key
 
@@ -69,21 +69,23 @@ Hooks.once('playerListStatusReady', function() {
 
 ```
 
-### with options
+
+### options
 
 resetFlags: After Login or Reload should the active flags reset to inactive?
 
 override: When the key is set from another module override the setting?
 
 position: where should the text shown, default is after username.
-<details><summary>parameters</summary>
+
+<details><summary>position</summary>
 `game.playerListStatus.options.beforeOnlineStatus`
 
 `game.playerListStatus.options.beforePlayername`
 
 `game.playerListStatus.options.afterPlayername`
 </details>
-<details><summary>example with options</summary>
+
 ```js
 Hooks.once('playerListStatusReady', function() {
 		let options = {
@@ -95,11 +97,11 @@ Hooks.once('playerListStatusReady', function() {
 });
 
 ```
-</details>
 
-## api access after key registration
 
-### on
+## API
+
+### game.playerListStatus.on
 Set the flag and show the key
 
 <details><summary>parameters</summary>
@@ -108,7 +110,8 @@ key: `string' the registered key
 id: (optional) `string` a user id
 </details>
 
-### off
+
+### game.playerListStatus.off
 
 Remove the flag and hide the key
 
@@ -118,7 +121,8 @@ key: `string' the registered key
 id: (optional) `string` a user id
 </details>
 
-### status
+
+### game.playerListStatus.status
 Return the status from the key.
 
 <details><summary>parameters</summary>
@@ -129,7 +133,8 @@ id: (optional) `string` a user id
 return: 'boolean' is key active?
 </details>
 
-### changeValue
+
+### game.playerListStatus.changeValue
 
 Change the element to show
 
@@ -139,7 +144,6 @@ key: `string' the registered key
 element: `string` or `HTMLElement` the element to show
 </details>
 
-<details><summary>example</summary>
 ```js
 	game.settings.register(moduleName, "typingIcon", {
 		name: game.i18n.localize("PLAYER-STATUS.typing.icon"),
@@ -155,9 +159,9 @@ element: `string` or `HTMLElement` the element to show
 	});
 
 ```
-</details>
 
-### changePosition
+
+### game.playerListStatus.changePosition
 
 Change the key position.
 
@@ -166,6 +170,7 @@ key: `string' the registered key
 
 element: `game.playerListStatus.positions` the position to show the key
 </details>
+
 ```js
 	game.settings.register(moduleName, "afkIconPosition", {
 		name: game.i18n.localize("PLAYER-STATUS.afk.iconPosition"),
@@ -183,9 +188,11 @@ element: `game.playerListStatus.positions` the position to show the key
 
 ```
 
-### removeKey
+
+### game.playerListStatus.removeKey
 
 Remove a key
+
 <details><summary>parameters</summary>
 key: `string' the registered key
 </details>
