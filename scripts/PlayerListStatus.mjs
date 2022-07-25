@@ -124,6 +124,7 @@ export default class PlayerListStatus {
 		}
 	}
 
+	/* Workaround for Foundry V9 */
 	async #setFlagAsync(key, user, elementList) {
 		console.debug(await user.setFlag(this.#moduleName, this.#registeredKeys.get(key).position, Object.fromEntries(elementList)));
 	}
@@ -133,6 +134,7 @@ export default class PlayerListStatus {
 		let width = parseInt(root.getPropertyValue("--players-width").replace("px", ""));
 		let maxWidth = 0;
 		for (let user of playerList.getData().users) {
+			/* V9 .id V10 ._id */
 			let userid = (typeof user._id == 'undefined') ? user.id : user._id;
 			let buttonPlacement = html.find(`[data-user-id="${userid}"]`);
 			let currentWidth = 0;
