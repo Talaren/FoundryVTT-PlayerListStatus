@@ -1,26 +1,25 @@
-- [FoundryVTT Library: PlayerList Status](#foundryvtt-library--playerlist-status)
-  * [Include as a dependency in your manifest](#include-as-a-dependency-in-your-manifest)
-    + [Foundry V10](#foundry-v10)
-    + [Foundry V9](#foundry-v9)
-  * [Usage](#usage)
-    + [register key](#register-key)
-      - [default options](#default-options)
-      - [with options](#with-options)
-    + [api access after key registration](#api-access-after-key-registration)
-      - [on](#on)
-      - [off](#off)
-      - [status](#status)
-      - [changeValue](#changevalue)
-      - [changePosition](#changeposition)
-      - [removeKey](#removekey)
-
 ![](https://img.shields.io/badge/Foundry-9.269-ready)
-
 ![](https://img.shields.io/badge/Foundry-10.275-ready)
 
 # FoundryVTT Library: PlayerList Status
 
 Allow modules to show text or icon in the playerlist.
+
+* [Include as a dependency in your manifest](#include-as-a-dependency-in-your-manifest)
+  + [Foundry V10](#foundry-v10)
+  + [Foundry V9](#foundry-v9)
+* [Usage](#usage)
+  + [register key](#register-key)
+    - [default options](#default-options)
+    - [with options](#with-options)
+* [api access after key registration](#api-access-after-key-registration)
+  + [on](#on)
+  + [off](#off)
+  + [status](#status)
+  + [changeValue](#changevalue)
+  + [changePosition](#changeposition)
+  + [removeKey](#removekey)
+
 
 ## Include as a dependency in your manifest
 
@@ -53,11 +52,11 @@ Allow modules to show text or icon in the playerlist.
 	]
 ```
 
-## Usage
+# Usage
 
-### register key
+## register key
 
-#### default options
+### default options
 
 key: `string' the registered key
 
@@ -74,7 +73,7 @@ Hooks.once('playerListStatusReady', function() {
 ```
 
 
-#### with options
+### with options
 
 resetFlags: After Login or Reload should the active flags reset to inactive?
 
@@ -101,10 +100,10 @@ Hooks.once('playerListStatusReady', function() {
 
 ```
 
-### api access after key registration
+## api access after key registration
 
 
-#### on
+### on
 
 Set the flag and show the key
 
@@ -114,7 +113,7 @@ key: `string' the registered key
 id: (optional) `string` a user id
 
 
-#### off
+### off
 
 Remove the flag and hide the key
 
@@ -124,7 +123,7 @@ key: `string' the registered key
 id: (optional) `string` a user id
 
 
-#### status
+### status
 
 Returns is the
 
@@ -137,7 +136,7 @@ id: (optional) `string` a user id
 return: 'boolean' is key active?
 
 
-#### changeValue
+### changeValue
 
 Change the element to show
 
@@ -165,7 +164,7 @@ element: `string` or `HTMLElement` the element to show
 ```
 
 
-#### changePosition
+### changePosition
 
 Change the key position.
 
@@ -194,7 +193,7 @@ element: `game.playerListStatus.positions` the position to show the key
 ```
 
 
-#### removeKey
+### removeKey
 
 Remove a key
 
