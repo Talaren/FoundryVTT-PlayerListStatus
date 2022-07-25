@@ -106,6 +106,7 @@ Hooks.once('playerListStatusReady', function() {
 Set the flag and show the key
 
 <details><summary>parameters</summary>
+
 key: `string` the registered key
 
 id: (optional) `string` a user id
@@ -117,6 +118,7 @@ id: (optional) `string` a user id
 Remove the flag and hide the key
 
 <details><summary>parameters</summary>
+
 key: `string` the registered key
 
 id: (optional) `string` a user id
@@ -127,6 +129,7 @@ id: (optional) `string` a user id
 Return the status from the key.
 
 <details><summary>parameters</summary>
+
 key: `string` the registered key
 
 id: (optional) `string` a user id
@@ -140,6 +143,7 @@ return: `boolean` is key active?
 Change the element to show
 
 <details><summary>parameters</summary>
+
 key: `string` the registered key
 
 element: `string` or `HTMLElement` the element to show
@@ -167,6 +171,7 @@ element: `string` or `HTMLElement` the element to show
 Change the key position.
 
 <details><summary>parameters</summary>
+
 key: `string` the registered key
 
 element: `game.playerListStatus.positions` the position to show the key
@@ -195,5 +200,6 @@ element: `game.playerListStatus.positions` the position to show the key
 Remove a key
 
 <details><summary>parameters</summary>
+
 key: `string` the registered key
 </details>
