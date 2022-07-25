@@ -80,11 +80,11 @@ position: where should the text shown, default is after username.
 
 <details><summary>position</summary>
 
-`game.playerListStatus.options.beforeOnlineStatus`
+`game.playerListStatus.positions.beforeOnlineStatus`
 
-`game.playerListStatus.options.beforePlayername`
+`game.playerListStatus.positions.beforePlayername`
 
-`game.playerListStatus.options.afterPlayername`
+`game.playerListStatus.positions.afterPlayername`
 </details>
 
 ```js
@@ -183,12 +183,12 @@ element: `game.playerListStatus.positions` the position to show the key
 		scope: 'world',
 		config: true,
 		choices: {
-			game.playerListStatus.options.beforeOnlineStatus: game.i18n.localize("PLAYER-STATUS.iconPosition.beforeOnline"),
-			game.playerListStatus.options.beforePlayername: game.i18n.localize("PLAYER-STATUS.iconPosition.afterOnline"),
-			game.playerListStatus.options.afterPlayername: game.i18n.localize("PLAYER-STATUS.iconPosition.afterName")
+			game.playerListStatus.positions.beforeOnlineStatus: game.i18n.localize("PLAYER-STATUS.iconPosition.beforeOnline"),
+			game.playerListStatus.positions.beforePlayername: game.i18n.localize("PLAYER-STATUS.iconPosition.afterOnline"),
+			game.playerListStatus.positions.afterPlayername: game.i18n.localize("PLAYER-STATUS.iconPosition.afterName")
 		},
 		type: String,
-		default: game.playerListStatus.options.afterPlayername,
+		default: game.playerListStatus.positions.afterPlayername,
 		onChange: setting => game.playerListStatus.changePosition(setting)
 	});
 
