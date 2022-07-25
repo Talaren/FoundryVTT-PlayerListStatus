@@ -11,7 +11,7 @@ Allow modules to show text or icon in the playerlist.
 * [Usage](#usage)
   + [registerKey](#game.playerListStatus.registerKey)
     - [options](#options)
-* [API](#API)
+* [API](#api)
   + [on](#gameplayerliststatuson)
   + [off](#gameplayerliststatusoff)
   + [status](#gameplayerlistStatusstatus)
