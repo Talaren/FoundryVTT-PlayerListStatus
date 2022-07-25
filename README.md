@@ -79,6 +79,7 @@ override: When the key is set from another module override the setting?
 position: where should the text shown, default is after username.
 
 <details><summary>position</summary>
+
 `game.playerListStatus.options.beforeOnlineStatus`
 
 `game.playerListStatus.options.beforePlayername`
