@@ -32,7 +32,7 @@ Allow modules to show text or icon in the playerlist.
 				"type": "module",
 				"manifest": "https://github.com/Talaren/FoundryVTT-PlayerListStatus/releases/latest/download/module.json",
 				"compatibility": {
-					"verified": "2.0.0"
+					"verified": "2.0.3"
 				}
 			}
 		]
@@ -46,7 +46,8 @@ Allow modules to show text or icon in the playerlist.
 		{
 			"name": "playerListStatus",
 			"type": "module",
-			"manifest": "https://github.com/Talaren/FoundryVTT-PlayerListStatus/releases/latest/download/module.json"
+			"manifest": "https://github.com/Talaren/FoundryVTT-PlayerListStatus/releases/latest/download/module.json",
+			"version": "2.0.3"
 		}
 	]
 ```
