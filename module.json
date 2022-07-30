@@ -24,5 +24,6 @@
 		"maximum": "10"
 	},
 	"name": "playerListStatus",
-	"minimumCoreVersion": "9"
+	"minimumCoreVersion": "9",
+	"compatibleCoreVersion": "9.269"
 }
