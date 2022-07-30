@@ -1,5 +1,5 @@
 ![](https://img.shields.io/badge/Foundry-9.269-ready)
-![](https://img.shields.io/badge/Foundry-10.275-ready)
+![](https://img.shields.io/badge/Foundry-10.276-ready)
 
 # FoundryVTT Library: PlayerList Status
 
