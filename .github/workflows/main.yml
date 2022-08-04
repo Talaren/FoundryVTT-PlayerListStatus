@@ -38,3 +38,12 @@ jobs:
         artifacts: './module.json, ./module.zip'
         tag: ${{ github.event.release.tag_name }}
         body: ${{ github.event.release.body }}
+        
+    - name: Close Milestone with same name
+      id: close_milestone
+      uses: adlerhsieh/prepare-release@v0.1.2
+      env: 
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        REPO_OWNER: 'Talaren'
+        REPO: 'FoundryVTT-PlayerListStatus'
+        IGNORE_MILESTONE_NOT_FOUND: true
