@@ -1,11 +1,19 @@
+import * as PLAYERLIST from "./PlayerListPositions.mjs";
+import PlayerListRegistry from "./PlayerListRegistry.mjs";
 import PlayerListStatus from "./PlayerListStatus.mjs";
 
-Hooks.once('ready', () => {
-	let playerListStatus = new PlayerListStatus();
-	game.playerListStatus = playerListStatus;
+globalThis.PLAYERLIST = PLAYERLIST;
 
-	Hooks.on('renderPlayerList', (playerList, html) => {
-		game.playerListStatus.render(playerList, html);
-	});
-	Hooks.callAll("playerListStatusReady", playerListStatus);
+let playerListRegistry = new PlayerListRegistry();
+Hooks.once("init", () => {
+    Hooks.callAll("playerListStatusInit", playerListRegistry);
+})
+
+Hooks.once('ready', () => {
+    Game.prototype.playerListStatus = new PlayerListStatus(playerListRegistry);
+
+    Hooks.on('renderPlayerList', (foundry, html, data) => {
+        game.playerListStatus.render(foundry, html, data);
+    });
+    Hooks.callAll("playerListStatusReady", game.playerListStatus);
 })

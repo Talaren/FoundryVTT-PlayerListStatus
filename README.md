@@ -9,12 +9,12 @@ Allow modules to show text or icon in the playerlist.
   + [Foundry V10](#foundry-v10)
   + [Foundry V9](#foundry-v9)
 * [Usage](#usage)
-  + [registerKey](#game.playerListStatus.registerKey)
+  + [registerKey](#registerregisterkey)
     - [options](#options)
 * [API](#api)
   + [on](#gameplayerliststatuson)
   + [off](#gameplayerliststatusoff)
-  + [status](#gameplayerlistStatusstatus)
+  + [status](#gameplayerliststatusstatus)
   + [changeValue](#gameplayerliststatuschangevalue)
   + [changePosition](#gameplayerliststatuschangeposition)
   + [removeKey](#gameplayerliststatusremovekey)
@@ -32,7 +32,7 @@ Allow modules to show text or icon in the playerlist.
 				"type": "module",
 				"manifest": "https://github.com/Talaren/FoundryVTT-PlayerListStatus/releases/latest/download/module.json",
 				"compatibility": {
-					"verified": "2.0.4"
+					"verified": "2.0.5"
 				}
 			}
 		]
@@ -47,7 +47,7 @@ Allow modules to show text or icon in the playerlist.
 			"name": "playerListStatus",
 			"type": "module",
 			"manifest": "https://github.com/Talaren/FoundryVTT-PlayerListStatus/releases/latest/download/module.json",
-			"version": "2.0.4"
+			"version": "2.0.5"
 		}
 	]
 ```
@@ -55,7 +55,7 @@ Allow modules to show text or icon in the playerlist.
 
 # Usage
 
-## game.playerListStatus.registerKey
+## register.registerKey
 
 key: `string` the registered key
 
@@ -64,8 +64,8 @@ element: `string` or `HTMLElement` the element to show
 return: `boolean` is the registration successful.
 
 ```js
-Hooks.once('playerListStatusReady', function() {
-		let success = game.playerListStatus.registerKey("afk", "💤");
+Hooks.once('playerListStatusInit', function(register) {
+		let success = register.registerKey("afk", "💤");
 });
 
 ```
@@ -89,13 +89,13 @@ position: where should the text shown, default is after username.
 </details>
 
 ```js
-Hooks.once('playerListStatusReady', function() {
+Hooks.once('playerListStatusInit', function(register) {
 		let options = {
 			resetFlags: true,
 			override: false,
-			position: game.playerListStatus.positions.beforeOnlineStatus
+			position: PLAYERLIST.POSITIONS.AFTER_PLAYERNAME
 		}
-		let success = game.playerListStatus.registerKey("afk", "💤", options);
+		let success = register.registerKey("afk", "💤", options);
 });
 
 ```
@@ -161,7 +161,7 @@ element: `string` or `HTMLElement` the element to show
 		},
 		type: String,
 		default: "🗨️",
-		onChange: setting => game.playerListStatus.changeValue(setting)
+		onChange: setting => game.playerListStatus.changeValue("afk", setting)
 	});
 
 ```
@@ -184,13 +184,13 @@ element: `game.playerListStatus.positions` the position to show the key
 		scope: 'world',
 		config: true,
 		choices: {
-			game.playerListStatus.positions.beforeOnlineStatus: game.i18n.localize("PLAYER-STATUS.iconPosition.beforeOnline"),
-			game.playerListStatus.positions.beforePlayername: game.i18n.localize("PLAYER-STATUS.iconPosition.afterOnline"),
-			game.playerListStatus.positions.afterPlayername: game.i18n.localize("PLAYER-STATUS.iconPosition.afterName")
+            PLAYERLIST.POSITIONS.BEFORE_ONLINE_STATUS: game.i18n.localize("PLAYER-STATUS.iconPosition.beforeOnline"),
+            PLAYERLIST.POSITIONS.BEFORE_PLAYERNAME: game.i18n.localize("PLAYER-STATUS.iconPosition.afterOnline"),
+            PLAYERLIST.POSITIONS.AFTER_PLAYERNAME: game.i18n.localize("PLAYER-STATUS.iconPosition.afterName")
 		},
-		type: String,
-		default: game.playerListStatus.positions.afterPlayername,
-		onChange: setting => game.playerListStatus.changePosition(setting)
+		type: Symbol,
+		default: PLAYERLIST.POSITIONS.AFTER_PLAYERNAME,
+		onChange: setting => game.playerListStatus.changePosition("afk", setting)
 	});
 
 ```
