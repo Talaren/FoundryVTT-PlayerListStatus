@@ -1,5 +1,10 @@
-![](https://img.shields.io/badge/Foundry-9.269-ready)
-![](https://img.shields.io/badge/Foundry-10.277-ready)
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/Talaren/FoundryVTT-PlayerListStatus?style=for-the-badge)
+![GitHub release (latest by date)](https://img.shields.io/github/downloads/Talaren/FoundryVTT-PlayerListStatus/latest/module.zip?style=for-the-badge)
+![Forge Installs](https://img.shields.io/badge/dynamic/json?label=Forge%20Installs&query=package.installs&suffix=%25&url=https://forge-vtt.com/api/bazaar/package/playerListStatus&colorB=green&style=for-the-badge)
+
+![Foundry Core Compatible Version](https://img.shields.io/badge/dynamic/json.svg?url=https://github.com/Talaren/FoundryVTT-PlayerListStatus/releases/latest/download/module.json&label=Foundry%20Version&query=$.compatibleCoreVersion&colorB=green&style=for-the-badge)
+
+![Foundry Core Compatible Version](https://img.shields.io/badge/dynamic/json.svg?url=https://github.com/Talaren/FoundryVTT-PlayerListStatus/releases/latest/download/module.json&label=Foundry%20Version&query=$.compatibility.verified&colorB=green&style=for-the-badge)
 
 # FoundryVTT Library: PlayerList Status
 
