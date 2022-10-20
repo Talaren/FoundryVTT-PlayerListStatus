@@ -20,7 +20,7 @@
 	"download": "https://github.com/Talaren/FoundryVTT-PlayerListStatus/releases/download/2.1.2/module.zip",
 	"compatibility": {
 		"minimum": "9",
-		"verified": "10.286",
+		"verified": "10.288",
 		"maximum": "10"
 	},
 	"name": "playerListStatus",
