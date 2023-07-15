@@ -3,7 +3,7 @@
 // noinspection JSUnusedGlobalSymbols
 /**
  * @readonly
- * @type {{BEFORE_PLAYERNAME: symbol, AFTER_PLAYERNAME: symbol, BEFORE_ONLINE_STATUS: symbol}}
+ * @type {{BEFORE_PLAYERNAME: Object, AFTER_PLAYERNAME: Object, BEFORE_ONLINE_STATUS: Object}}
  */
 export const POSITIONS = Object.freeze({
     /**
