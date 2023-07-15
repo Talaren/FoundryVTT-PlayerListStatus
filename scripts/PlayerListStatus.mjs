@@ -1,5 +1,4 @@
 /** @module PlayerListStatus */
-// noinspection JSUnusedGlobalSymbols
 
 import PlayerListRegistry from "./PlayerListRegistry.mjs";
 
@@ -109,7 +108,7 @@ export default class PlayerListStatus {
      * Change the showed position
      *
      * @param {string} key the key
-     * @param {symbol} position the show position values get from this.
+     * @param {Object} position the show position values get from this.
      */
     changePosition(key, position = PLAYERLIST.POSITIONS.AFTER_PLAYERNAME) {
         let active = this.status(key);
@@ -143,6 +142,28 @@ export default class PlayerListStatus {
         user.setFlag(this.#moduleName, this.#registry.getKeys().get(key).position.description, Object.fromEntries(elementList)).then(null, error => console.error(error));
     }
 
+    /**
+     * Insert an element or a string value at a specific position
+     *
+     * @param {HTMLElement} container The container to insert the value to
+     * @param {HTMLElement} referenceNode The reference node to insert before
+     * @param {string|HTMLElement} value The value to insert
+     * @param {string} key The key for the inserted element
+     */
+    #insertValue(container, referenceNode, value, key) {
+        if (value instanceof HTMLElement) {
+            container.insertBefore(value, referenceNode);
+        } else if (typeof value === 'string') {
+            let valueElement = document.createElement('span');
+            valueElement.style.flex = "0 0 auto";
+            valueElement.textContent = value;
+            valueElement.id = key;
+            container.insertBefore(valueElement, referenceNode);
+        } else {
+            console.error("Unknown Type")
+        }
+    }
+
     render(foundry, html, options) {
         let root = getComputedStyle(document.querySelector(":root"));
         let width = parseInt(root.getPropertyValue("--players-width").replace("px", ""));
@@ -151,7 +172,6 @@ export default class PlayerListStatus {
             /* V9 .id V10 ._id */
             let userid = (typeof user._id == 'undefined') ? user.id : user._id;
             let buttonPlacement = html.find(`[data-user-id="${userid}"]`);
-            let currentWidth = 0;
             let children = buttonPlacement.children();
             let playerName = undefined;
             let playerActive = undefined;
@@ -180,64 +200,62 @@ export default class PlayerListStatus {
             let beforeOnlineStatus = flag[PLAYERLIST.POSITIONS.BEFORE_ONLINE_STATUS.description];
             let beforePlayername = flag[PLAYERLIST.POSITIONS.BEFORE_PLAYERNAME.description];
             let afterPlayername = flag[PLAYERLIST.POSITIONS.AFTER_PLAYERNAME.description];
-            if (typeof beforeOnlineStatus !== "undefined" && beforeOnlineStatus !== null) {
+            if (beforeOnlineStatus !== undefined) {
                 for (let [key, value] of new Map(Object.entries(beforeOnlineStatus))) {
-                    if (value instanceof HTMLElement) {
-                        currentWidth += value.offsetWidth;
-                        buttonPlacement[0].insertBefore(value, playerActive);
-                    } else if (typeof value === 'string') {
-                        currentWidth += value.length;
-                        let valueElement = document.createElement('span');
-                        valueElement.style.flex = "0 0 auto";
-                        valueElement.textContent = value;
-                        valueElement.id = key;
-                        buttonPlacement[0].insertBefore(valueElement, playerActive);
-                    } else {
-                        console.error("Unknown Type")
-                    }
+                    maxWidth = this.#updateMaxWidth(maxWidth, value);
+                    this.#insertValue(buttonPlacement[0], playerActive, value, key);
                 }
             }
-            if (typeof beforePlayername !== "undefined" && beforePlayername !== null) {
+            if (beforePlayername !== undefined) {
                 for (let [key, value] of new Map(Object.entries(beforePlayername))) {
-                    if (value instanceof HTMLElement) {
-                        currentWidth += value.offsetWidth;
-                        buttonPlacement[0].insertBefore(value, playerName);
-                    } else if (typeof value === 'string') {
-                        currentWidth += value.length;
-                        let valueElement = document.createElement('span');
-                        valueElement.style.flex = "0 0 auto";
-                        valueElement.textContent = value;
-                        valueElement.id = key;
-                        buttonPlacement[0].insertBefore(valueElement, playerName);
-                    } else {
-                        console.error("Unknown Type")
-                    }
+                    maxWidth = this.#updateMaxWidth(maxWidth, value);
+                    this.#insertValue(buttonPlacement[0], playerName, value, key);
                 }
             }
-            if (typeof afterPlayername !== "undefined" && afterPlayername !== null) {
+            if (afterPlayername !== undefined) {
                 for (let [key, value] of new Map(Object.entries(afterPlayername))) {
-                    if (value instanceof HTMLElement) {
-                        currentWidth += value.offsetWidth;
-                        buttonPlacement[0].appendChild(value);
-                    } else if (typeof value === 'string') {
-                        currentWidth += value.length;
-                        let valueElement = document.createElement('span');
-                        valueElement.style.flex = "0 0 auto";
-                        valueElement.textContent = value;
-                        valueElement.id = key;
-                        playerName.append(valueElement);
-                    } else {
-                        console.error("Unknown Type")
-                    }
+                    maxWidth = this.#updateMaxWidth(maxWidth, value);
+                    this.#insertValue(buttonPlacement[0], null, value, key);
                 }
             }
-            if (currentWidth > maxWidth) {
-                maxWidth = currentWidth;
+            if (maxWidth > 0) {
+                html[0].style.width = (width + maxWidth) + "px";
             }
 
         }
         if (maxWidth > 0) {
             html[0].style.width = (width + maxWidth) + "px";
         }
+    }
+
+    /**
+     * Measures the width of a string in pixels when rendered in the given font.
+     *
+     * @param {string} text The text to measure.
+     * @param {string} font The CSS font declaration (e.g., "16px Arial").
+     * @returns {number} The width of the text in pixels.
+     */
+    #measureTextWidth(text, font) {
+        let canvas = document.createElement("canvas");
+        let context = canvas.getContext("2d");
+        context.font = font;
+        return context.measureText(text).width;
+    }
+
+    /**
+     * Update the maximum width if the given value's width is larger
+     *
+     * @param {number} maxWidth The current maximum width
+     * @param {string|HTMLElement} value The value to check the width of
+     * @returns {number} The updated maximum width
+     */
+    #updateMaxWidth(maxWidth, value) {
+        let width;
+        if (value instanceof HTMLElement) {
+            width = value.offsetWidth;
+        } else if (typeof value === 'string') {
+            width = this.#measureTextWidth(value, "14px Arial");
+        }
+        return Math.max(maxWidth, width);
     }
 }
