@@ -7,13 +7,12 @@ export default class PlayerListRegistry {
     }
     #toReset = new Set();
 
-    // noinspection JSUnusedGlobalSymbols
     /**
      * register a key for use
      *
      * @param {string} key the key to register
      * @param {string|HTMLElement} element
-     * @param {{resetFlags: boolean, override: boolean, position: symbol}} options
+     * @param {{resetFlags: boolean, override: boolean, position: Object}} options
      * @returns {boolean} is key successful registered
      */
     registerKey(key, element, options = this.#defaultOptions) {
