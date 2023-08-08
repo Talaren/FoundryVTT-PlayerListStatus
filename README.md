@@ -27,7 +27,7 @@ Allow modules to show text or icon in the playerlist.
 
 # Include as a dependency in your manifest
 
-## Foundry V10
+## Foundry V10 + V11
 
 ```json
 	"relationships": {
@@ -37,7 +37,7 @@ Allow modules to show text or icon in the playerlist.
 				"type": "module",
 				"manifest": "https://github.com/Talaren/FoundryVTT-PlayerListStatus/releases/latest/download/module.json",
 				"compatibility": {
-					"verified": "3.0.0"
+					"verified": "3.0.1"
 				}
 			}
 		]
@@ -52,7 +52,7 @@ Allow modules to show text or icon in the playerlist.
 			"name": "playerListStatus",
 			"type": "module",
 			"manifest": "https://github.com/Talaren/FoundryVTT-PlayerListStatus/releases/latest/download/module.json",
-			"version": "3.0.0"
+			"version": "3.0.1"
 		}
 	]
 ```
