@@ -169,8 +169,7 @@ export default class PlayerListStatus {
         let width = parseInt(root.getPropertyValue("--players-width").replace("px", ""));
         let maxWidth = 0;
         for (let user of options.users) {
-            /* V9 .id V10 ._id */
-            let userid = (typeof user._id == 'undefined') ? user.id : user._id;
+            let userid = user._id;
             let buttonPlacement = html.find(`[data-user-id="${userid}"]`);
             let children = buttonPlacement.children();
             let playerName = undefined;
