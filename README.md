@@ -8,11 +8,10 @@
 
 # FoundryVTT Library: PlayerList Status
 
-Allow modules to show text or icon in the playerlist.
+Allow modules to show text or icon in the player list.
 
 * [Include as a dependency in your manifest](#include-as-a-dependency-in-your-manifest)
   + [Foundry V10](#foundry-v10)
-  + [Foundry V9](#foundry-v9)
 * [Usage](#usage)
   + [registerKey](#registerregisterkey)
     - [options](#options)
@@ -27,36 +26,24 @@ Allow modules to show text or icon in the playerlist.
 
 # Include as a dependency in your manifest
 
-## Foundry V10 + V11
+## Foundry V10+
 
 ```json
-	"relationships": {
-		"requires": [
-			{
-				"id": "playerListStatus",
-				"type": "module",
-				"manifest": "https://github.com/Talaren/FoundryVTT-PlayerListStatus/releases/latest/download/module.json",
-				"compatibility": {
-					"verified": "3.0.1"
-				}
-			}
-		]
-	}
+{
+  "relationships": {
+    "requires": [
+      {
+        "id": "playerListStatus",
+        "type": "module",
+        "manifest": "https://github.com/Talaren/FoundryVTT-PlayerListStatus/releases/latest/download/module.json",
+        "compatibility": {
+          "verified": "3.0.1"
+        }
+      }
+    ]
+  }
+}
 ```
-
-## Foundry V9
-
-```json
-	"dependencies": [
-		{
-			"name": "playerListStatus",
-			"type": "module",
-			"manifest": "https://github.com/Talaren/FoundryVTT-PlayerListStatus/releases/latest/download/module.json",
-			"version": "3.0.1"
-		}
-	]
-```
-
 
 # Usage
 

@@ -12,18 +12,15 @@
 			}
 		}
 	],
-	"version": "3.0.1",
+	"version": "3.1.0",
 	"esmodules": [
 		"scripts/playerliststatus.js"
 	],
 	"manifest": "https://github.com/Talaren/FoundryVTT-PlayerListStatus/releases/latest/download/module.json",
-	"download": "https://github.com/Talaren/FoundryVTT-PlayerListStatus/releases/download/3.0.1/module.zip",
+	"download": "https://github.com/Talaren/FoundryVTT-PlayerListStatus/releases/download/3.1.0/module.zip",
 	"compatibility": {
-		"minimum": "9",
-		"verified": "11.307",
-		"maximum": "11"
-	},
-	"name": "playerListStatus",
-	"minimumCoreVersion": "9",
-	"compatibleCoreVersion": "9.280"
+		"minimum": "10",
+		"verified": "12.324",
+		"maximum": "12"
+	}
 }
