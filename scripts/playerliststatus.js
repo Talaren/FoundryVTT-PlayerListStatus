@@ -15,5 +15,10 @@ Hooks.once('ready', () => {
     Hooks.on('renderPlayerList', (foundry, html, data) => {
         game.playerListStatus.render(foundry, html, data);
     });
+
+    Hooks.on('updateUser', (user, props, mods, id) => {
+        game.users.apps.find((app)=>app instanceof PlayerList)?.render();
+    })
+
     Hooks.callAll("playerListStatusReady", game.playerListStatus);
 })
