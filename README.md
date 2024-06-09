@@ -35,7 +35,7 @@ Allow modules to show text or icon in the player list.
         "type": "module",
         "manifest": "https://github.com/Talaren/FoundryVTT-PlayerListStatus/releases/latest/download/module.json",
         "compatibility": {
-          "verified": "3.0.1"
+          "verified": "3.1.2"
         }
       }
     ]
