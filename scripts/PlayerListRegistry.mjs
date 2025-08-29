@@ -6,6 +6,7 @@ export default class PlayerListRegistry {
         resetFlags: true, override: false, position: PLAYERLIST.POSITIONS.AFTER_PLAYERNAME
     }
     #toReset = new Set();
+    static #warnedDeprecatedBeforeOnline = false;
 
     /**
      * register a key for use
@@ -13,7 +14,7 @@ export default class PlayerListRegistry {
      * @param {string} key the key to register
      * @param {string|HTMLElement} element
      * @param {{resetFlags: boolean, override: boolean, position: Object}} options
-     * @returns {boolean} is key successful registered
+     * @returns {boolean} is key successfully registered
      */
     registerKey(key, element, options = this.#defaultOptions) {
         if (typeof key == 'undefined') {
@@ -39,6 +40,10 @@ export default class PlayerListRegistry {
         if (options.position !== PLAYERLIST.POSITIONS.BEFORE_ONLINE_STATUS && options.position !== PLAYERLIST.POSITIONS.BEFORE_PLAYERNAME && options.position !== PLAYERLIST.POSITIONS.AFTER_PLAYERNAME) {
             console.error("invalid position");
             return false;
+        }
+        if (options.position === PLAYERLIST.POSITIONS.BEFORE_ONLINE_STATUS && !PlayerListRegistry.#warnedDeprecatedBeforeOnline) {
+            console.warn(PLAYERLIST.WARN_BEFORE_ONLINE_STATUS);
+            PlayerListRegistry.#warnedDeprecatedBeforeOnline = true;
         }
         if (!options.override && this.#registeredKeys.has(key)) {
             console.warn("Key is set, but not override is not set");

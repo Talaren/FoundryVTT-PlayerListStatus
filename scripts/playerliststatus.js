@@ -10,15 +10,16 @@ Hooks.once("init", () => {
 })
 
 Hooks.once('ready', () => {
-    Game.prototype.playerListStatus = new PlayerListStatus(playerListRegistry);
+    game.playerListStatus = new PlayerListStatus(playerListRegistry);
 
-    Hooks.on('renderPlayerList', (foundry, html, data) => {
-        game.playerListStatus.render(foundry, html, data);
+    // Foundry v12: PlayerList (ApplicationV1)
+    Hooks.on('renderPlayerList', (app, html, data) => {
+        game.playerListStatus.render(app, html, data);
     });
-
-    Hooks.on('updateUser', (user, props, mods, id) => {
-        game.users.apps.find((app)=>app instanceof PlayerList)?.render();
-    })
+    // Foundry v13+: Users/User Management (ApplicationV2).
+    Hooks.on('renderPlayers', (app, html, data) => {
+        game.playerListStatus.render(app, html, data);
+    });
 
     Hooks.callAll("playerListStatusReady", game.playerListStatus);
 })

@@ -6,6 +6,7 @@ export default class PlayerListStatus {
 
     #moduleName = "playerListStatus";
     #registry = new PlayerListRegistry();
+    #warnedBeforeOnlineV13 = false;
 
     /**
      *
@@ -19,6 +20,23 @@ export default class PlayerListStatus {
         this.#registry = registry;
         for (let key of this.#registry.getToReset()) {
             this.off(key);
+        }
+    }
+
+    /**
+     * Determine the running Foundry major version.
+     * Extracts the first numeric sequence from `game.version` or
+     * `game.release.version` to avoid parseInt quirks with prefixes/suffixes.
+     * @returns {number}
+     */
+    #getMajorVersion() {
+        try {
+            const versionStr = game?.version ?? game?.release?.version ?? "";
+            const match = versionStr.match(/\d+/);
+            const v = match ? parseInt(match[0], 10) : 0;
+            return Number.isNaN(v) ? 0 : v;
+        } catch (e) {
+            return 0;
         }
     }
 
@@ -89,6 +107,7 @@ export default class PlayerListStatus {
      * @param {string} key the key
      * @returns {boolean} is active?
      */
+    // noinspection JSUnusedGlobalSymbols
     isRegistered(key) {
         return this.#registry.getKeys().has(key);
     }
@@ -165,64 +184,70 @@ export default class PlayerListStatus {
     }
 
     render(foundry, html, options) {
-        let root = getComputedStyle(document.querySelector(":root"));
-        let width = parseInt(root.getPropertyValue("--players-width").replace("px", ""));
+        // Compute base width when available (v12); v13 may not expose this var.
+        let width = 0;
+        try {
+            let root = getComputedStyle(document.querySelector(":root"));
+            width = parseInt((root.getPropertyValue("--players-width") || "0").replace("px", "")) || 0;
+        } catch (e) { /* ignore */ }
+
         let maxWidth = 0;
-        for (let user of options.users) {
-            let userid = user._id;
-            let buttonPlacement = html.find(`[data-user-id="${userid}"]`);
-            let children = buttonPlacement.children();
-            let playerName = undefined;
-            let playerActive = undefined;
-            for (let child of children) {
-                if (child.classList.contains("player-name")) {
-                    playerName = child;
-                } else if (child.classList.contains("player-active")) {
-                    playerActive = child;
-                } else if (child.classList.contains("player-inactive")) {
-                    playerActive = child;
-                }
-            }
-            if (typeof playerName === 'undefined' || typeof playerActive === 'undefined') {
-                continue;
-            }
-            let flag
-            if (parseInt(game.version) === 9) {
-                flag = user.data.flags["playerListStatus"];
-            } else {
-                flag = user.flags["playerListStatus"];
-            }
+        const major = this.#getMajorVersion();
 
-            if (typeof flag === 'undefined') {
-                continue;
-            }
-            let beforeOnlineStatus = flag[PLAYERLIST.POSITIONS.BEFORE_ONLINE_STATUS.description];
-            let beforePlayername = flag[PLAYERLIST.POSITIONS.BEFORE_PLAYERNAME.description];
-            let afterPlayername = flag[PLAYERLIST.POSITIONS.AFTER_PLAYERNAME.description];
-            if (beforeOnlineStatus !== undefined) {
+        const users = (options && options.users) || game.users?.contents || game.users;
+        for (let user of users) {
+            const userid = user.id || user._id;
+            const row = this.#findRow(html, userid);
+            if (!row) continue;
+
+            const anchors = this.#findAnchors(row, major);
+            if (!anchors.nameEl) continue; // cannot reliably place without a name element
+
+            const flag = (user.flags && user.flags["playerListStatus"]) || (user.data?.flags && user.data.flags["playerListStatus"]);
+            if (typeof flag === 'undefined') continue;
+            let afkPresent = false;
+
+            const beforeOnlineStatus = flag[PLAYERLIST.POSITIONS.BEFORE_ONLINE_STATUS.description];
+            const beforePlayername = flag[PLAYERLIST.POSITIONS.BEFORE_PLAYERNAME.description];
+            const afterPlayername = flag[PLAYERLIST.POSITIONS.AFTER_PLAYERNAME.description];
+
+            if (beforeOnlineStatus) {
+                if (major >= 13 && !this.#warnedBeforeOnlineV13) {
+                    console.warn(PLAYERLIST.WARN_BEFORE_ONLINE_STATUS);
+                    this.#warnedBeforeOnlineV13 = true;
+                }
                 for (let [key, value] of new Map(Object.entries(beforeOnlineStatus))) {
+                    if (this.#shouldSkipRenderForKey(major, key)) { afkPresent = true; continue; }
                     maxWidth = this.#updateMaxWidth(maxWidth, value);
-                    this.#insertValue(buttonPlacement[0], playerActive, value, key);
+                    // v13: there is no inline status icon; insert at row start
+                    // v12: if a status/indicator anchor exists, place before it
+                    const reference = anchors.statusEl || row.firstChild;
+                    this.#insertValue(row, reference, value, this.#keyId(key, userid));
                 }
             }
-            if (beforePlayername !== undefined) {
+            if (beforePlayername) {
                 for (let [key, value] of new Map(Object.entries(beforePlayername))) {
+                    if (this.#shouldSkipRenderForKey(major, key)) { afkPresent = true; continue; }
                     maxWidth = this.#updateMaxWidth(maxWidth, value);
-                    this.#insertValue(buttonPlacement[0], playerName, value, key);
+                    this.#insertValue(row, anchors.nameEl, value, this.#keyId(key, userid));
                 }
             }
-            if (afterPlayername !== undefined) {
+            if (afterPlayername) {
                 for (let [key, value] of new Map(Object.entries(afterPlayername))) {
+                    if (this.#shouldSkipRenderForKey(major, key)) { afkPresent = true; continue; }
                     maxWidth = this.#updateMaxWidth(maxWidth, value);
-                    this.#insertValue(buttonPlacement[0], null, value, key);
+                    // Append after the name element
+                    this.#insertAfter(anchors.nameEl, value, this.#keyId(key, userid));
                 }
-            }
-            if (maxWidth > 0) {
-                html[0].style.width = (width + maxWidth) + "px";
             }
 
+            // Mirror AFK to core-style "idle" class in V13. Do not affect other keys.
+            if (major >= 13) {
+                row.classList.toggle("idle", !!afkPresent);
+            }
         }
-        if (maxWidth > 0) {
+
+        if (maxWidth > 0 && width > 0) {
             html[0].style.width = (width + maxWidth) + "px";
         }
     }
@@ -257,4 +282,81 @@ export default class PlayerListStatus {
         }
         return Math.max(maxWidth, width);
     }
+
+    /**
+     * Find the row element for the given user id within the rendered html
+     */
+    #findRow(html, userid) {
+        const root = html[0] || html;
+        return (
+            root.querySelector?.(`[data-user-id="${userid}"]`) ||
+            root.querySelector?.(`[data-user='${userid}']`) ||
+            null
+        );
+    }
+
+    /**
+     * Find anchors for status and name elements.
+     * V13 DOM from user: li.player > span.player-name. No inline status node.
+     * V12 DOM: varies; try legacy selectors.
+     */
+    #findAnchors(row, major) {
+        let nameEl = null;
+        let statusEl = null;
+        if (major >= 13) {
+            nameEl = row.querySelector?.("span.player-name");
+            // No dedicated status element in V13 rows; keep null to insert at start when needed.
+            statusEl = null;
+        }
+        if (!nameEl) {
+            // Fallbacks for v12 and themed installs
+            nameEl = row.querySelector?.(
+                ".player-name, .user-name, .name, [data-element='user-name'], [data-role='user-name'], h4, .username"
+            );
+        }
+        if (major < 13) {
+            statusEl = row.querySelector?.(
+                ".player-active, .player-inactive, .status, [data-role='status']"
+            ) || statusEl;
+        }
+        return { nameEl, statusEl };
+    }
+
+    /**
+     * Insert node/value right after a reference node
+     */
+    #insertAfter(referenceNode, value, key) {
+        const container = referenceNode.parentNode;
+        if (!container) return;
+        const next = referenceNode.nextSibling;
+        this.#insertValue(container, next, value, key);
+    }
+
+    /**
+     * Compose a unique element id per user/key
+     */
+    #keyId(key, userid) {
+        return `pls-${key}-${userid}`;
+    }
+
+    /**
+     * Should rendering be skipped for this key at this version? (e.g., AFK on V13)
+     * @param {number} major
+     * @param {string} key
+     * @returns {boolean}
+     */
+    #shouldSkipRenderForKey(major, key) {
+        return major >= 13 && this.#isAfkKey(key);
+    }
+
+    /**
+     * Is the provided key an AFK indicator (case-insensitive)?
+     * @param {string} key
+     * @returns {boolean}
+     */
+    #isAfkKey(key) {
+        return key?.toString().toLowerCase() === "afk";
+    }
+
+    // No generic AFK fallback detection needed for V13 per project guidance.
 }
