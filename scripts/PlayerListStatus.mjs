@@ -25,13 +25,16 @@ export default class PlayerListStatus {
 
     /**
      * Determine the running Foundry major version.
-     * Uses parseInt(game.version) as requested; falls back defensively.
+     * Extracts the first numeric sequence from `game.version` or
+     * `game.release.version` to avoid parseInt quirks with prefixes/suffixes.
      * @returns {number}
      */
     #getMajorVersion() {
         try {
-            const v = parseInt(game?.version ?? game?.release?.version ?? 0);
-            return isNaN(v) ? 0 : v;
+            const versionStr = game?.version ?? game?.release?.version ?? "";
+            const match = versionStr.match(/\d+/);
+            const v = match ? parseInt(match[0], 10) : 0;
+            return Number.isNaN(v) ? 0 : v;
         } catch (e) {
             return 0;
         }
@@ -210,11 +213,11 @@ export default class PlayerListStatus {
 
             if (beforeOnlineStatus) {
                 if (major >= 13 && !this.#warnedBeforeOnlineV13) {
-                    console.warn("playerListStatus: BEFORE_ONLINE_STATUS cannot precede the V13 ::before online dot; content is inserted at the start of the row (visually after the dot)." );
+                    console.warn(PLAYERLIST.WARN_BEFORE_ONLINE_STATUS);
                     this.#warnedBeforeOnlineV13 = true;
                 }
                 for (let [key, value] of new Map(Object.entries(beforeOnlineStatus))) {
-                    if (major >= 13 && key?.toString().toLowerCase() === "afk") { afkPresent = true; continue; }
+                    if (this.#shouldSkipRenderForKey(major, key)) { afkPresent = true; continue; }
                     maxWidth = this.#updateMaxWidth(maxWidth, value);
                     // v13: there is no inline status icon; insert at row start
                     // v12: if a status/indicator anchor exists, place before it
@@ -224,14 +227,14 @@ export default class PlayerListStatus {
             }
             if (beforePlayername) {
                 for (let [key, value] of new Map(Object.entries(beforePlayername))) {
-                    if (major >= 13 && key?.toString().toLowerCase() === "afk") { afkPresent = true; continue; }
+                    if (this.#shouldSkipRenderForKey(major, key)) { afkPresent = true; continue; }
                     maxWidth = this.#updateMaxWidth(maxWidth, value);
                     this.#insertValue(row, anchors.nameEl, value, this.#keyId(key, userid));
                 }
             }
             if (afterPlayername) {
                 for (let [key, value] of new Map(Object.entries(afterPlayername))) {
-                    if (major >= 13 && key?.toString().toLowerCase() === "afk") { afkPresent = true; continue; }
+                    if (this.#shouldSkipRenderForKey(major, key)) { afkPresent = true; continue; }
                     maxWidth = this.#updateMaxWidth(maxWidth, value);
                     // Append after the name element
                     this.#insertAfter(anchors.nameEl, value, this.#keyId(key, userid));
@@ -334,6 +337,25 @@ export default class PlayerListStatus {
      */
     #keyId(key, userid) {
         return `pls-${key}-${userid}`;
+    }
+
+    /**
+     * Should rendering be skipped for this key at this version? (e.g., AFK on V13)
+     * @param {number} major
+     * @param {string} key
+     * @returns {boolean}
+     */
+    #shouldSkipRenderForKey(major, key) {
+        return major >= 13 && this.#isAfkKey(key);
+    }
+
+    /**
+     * Is the provided key an AFK indicator (case-insensitive)?
+     * @param {string} key
+     * @returns {boolean}
+     */
+    #isAfkKey(key) {
+        return key?.toString().toLowerCase() === "afk";
     }
 
     // No generic AFK fallback detection needed for V13 per project guidance.

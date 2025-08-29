@@ -26,7 +26,7 @@ Allow modules to show text or icon in the player list.
 - AFK handling: When the registered key name is "afk" (case-insensitive), the module does not render an icon/text in the list on V13. Instead, it mirrors the state by toggling the CSS class `idle` on the corresponding `<li class="player">` element, aligning with Foundry’s built-in Users view behavior.
 - Other keys: All non-"afk" keys render as usual at the configured position.
 - Online indicator: In V13 the online dot is provided via CSS `li.player::before` using `var(--player-color)`/`var(--player-border)`. Inserting content at `BEFORE_ONLINE_STATUS` positions your element at the start of the row and does not replace the dot.
-- Version detection: Uses `parseInt(game.version)` to detect the major version.
+- Version detection: Extracts the first numeric sequence from `game.version` or `game.release.version` to determine the major version (e.g., `13` from `13.348`).
 
 ## Deprecation
 

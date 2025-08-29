@@ -10,7 +10,7 @@ This module ships as plain ES modules; there is no build step.
 
 - Entry point: `scripts/playerliststatus.js`
   - Exposes `globalThis.PLAYERLIST` with position symbols from `scripts/PlayerListPositions.mjs`.
-  - Installs hooks and attaches `Game.prototype.playerListStatus`.
+  - Installs hooks and attaches `game.playerListStatus`.
 - Manifest: `module.json`
   - `id`: `playerListStatus`
   - `esmodules`: `["scripts/playerliststatus.js"]`
@@ -77,7 +77,7 @@ def main() -> int:
     src = (ROOT / entry_rel).read_text(encoding="utf-8")
     ok &= assert_true("Hooks.once(\"init\"" in src, "hooks: init registered")
     ok &= assert_true("renderPlayerList" in src, "hooks: renderPlayerList registered")
-    ok &= assert_true("Game.prototype.playerListStatus" in src, "Game.prototype.playerListStatus is assigned")
+    ok &= assert_true("game.playerListStatus" in src, "game.playerListStatus is assigned")
     ok &= assert_true("globalThis.PLAYERLIST" in src, "globalThis.PLAYERLIST is exported")
     pls = (ROOT / "scripts" / "PlayerListStatus.mjs").read_text(encoding="utf-8")
     for m in ("on(", "off(", "status(", "changeValue(", "changePosition(", "render("):
@@ -105,7 +105,7 @@ Project root: /home/rainerw/git/FoundryVTT-PlayerListStatus
 [ OK ] required file exists: scripts/PlayerListPositions.mjs
 [ OK ] hooks: init registered
 [ OK ] hooks: renderPlayerList registered
-[ OK ] Game.prototype.playerListStatus is assigned
+[ OK ] game.playerListStatus is assigned
 [ OK ] globalThis.PLAYERLIST is exported
 [ OK ] positions include symbol description: beforeOnlineStatus
 [ OK ] positions include symbol description: beforePlayername

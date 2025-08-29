@@ -10,7 +10,7 @@ Hooks.once("init", () => {
 })
 
 Hooks.once('ready', () => {
-    Game.prototype.playerListStatus = new PlayerListStatus(playerListRegistry);
+    game.playerListStatus = new PlayerListStatus(playerListRegistry);
 
     // Foundry v12: PlayerList (ApplicationV1)
     Hooks.on('renderPlayerList', (app, html, data) => {

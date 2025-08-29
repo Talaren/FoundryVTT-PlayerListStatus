@@ -42,7 +42,7 @@ export default class PlayerListRegistry {
             return false;
         }
         if (options.position === PLAYERLIST.POSITIONS.BEFORE_ONLINE_STATUS && !PlayerListRegistry.#warnedDeprecatedBeforeOnline) {
-            console.warn("playerListStatus: POSITIONS.BEFORE_ONLINE_STATUS is deprecated and will be removed in a future version. On Foundry V13+ it cannot precede the CSS ::before online indicator; use BEFORE_PLAYERNAME instead.");
+            console.warn(PLAYERLIST.WARN_BEFORE_ONLINE_STATUS);
             PlayerListRegistry.#warnedDeprecatedBeforeOnline = true;
         }
         if (!options.override && this.#registeredKeys.has(key)) {
