@@ -8,6 +8,8 @@
 export const POSITIONS = Object.freeze({
     /**
      * beforeOnlineStatus: symbol
+     * @deprecated Deprecated for Foundry V13+. The online indicator is rendered via CSS ::before,
+     * so content cannot be placed visually before it. Use BEFORE_PLAYERNAME instead.
      */
     BEFORE_ONLINE_STATUS: Symbol("beforeOnlineStatus"),
     /**
